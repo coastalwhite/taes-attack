@@ -1,0 +1,24 @@
+[package]
+name = "find_sets"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies.io_trait]
+path = "../../io_trait"
+
+[dependencies.taes]
+path = "../../taes"
+# path = "/home/johndoe/Projects/taes"
+
+[dependencies.gem5_io]
+path = "../../gem5/io"
+optional = true
+
+[dependencies.cw305_io]
+path = "../../cw305/io"
+optional = true
+
+[features]
+default = ["gem5"]
+gem5 = ["gem5_io"]
+cw305 = ["cw305_io"]
