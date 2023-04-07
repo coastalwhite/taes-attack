@@ -1,10 +1,10 @@
 #! /usr/bin/env python
 
-from cw305_io import CW305IO
+from taes.cw305_io import CW305IO
 import find_sets
 # import io_accuracy
 from program import RAM
-from connection import PulpinoConnection
+from taes.connection import PulpinoConnection
 
 bitpath = "./set_associative_cache.bit"
 pulpino = PulpinoConnection(bitpath, force = True)

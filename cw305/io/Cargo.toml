@@ -7,4 +7,4 @@ edition = "2021"
 path = "../../io_trait"
 
 [dependencies.ext_io]
-path = "/home/johndoe/Documents/vm-shared/pulpino-top-level-cw305/program/target/rust/ext_io"
+path = "../../pulpino-top-level-cw305/program/target/rust/ext_io"
