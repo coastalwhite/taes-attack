@@ -1,0 +1,7 @@
+[package]
+name = "gem5_io"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies.io_trait]
+path = "../../io_trait"
