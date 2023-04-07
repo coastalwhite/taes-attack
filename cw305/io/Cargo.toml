@@ -1,0 +1,10 @@
+[package]
+name = "cw305_io"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies.io_trait]
+path = "../../io_trait"
+
+[dependencies.ext_io]
+path = "/home/johndoe/Documents/vm-shared/pulpino-top-level-cw305/program/target/rust/ext_io"
