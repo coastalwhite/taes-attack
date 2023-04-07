@@ -1,4 +1,4 @@
-from io_trait import TargetIO
+from taes.io_trait import TargetIO
 
 class CW305IO(TargetIO):
     def __init__(self, pulpino) -> None:

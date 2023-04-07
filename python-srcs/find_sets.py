@@ -1,4 +1,4 @@
-from io_trait import TargetIO
+from taes.io_trait import TargetIO
 
 def is_miss(time_to_access: int):
     return time_to_access > 10

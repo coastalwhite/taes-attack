@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 from taes.cw305_io import CW305IO
-import find_sets
+from taes import find_sets
 # import io_accuracy
 from program import RAM
 from taes.connection import PulpinoConnection
