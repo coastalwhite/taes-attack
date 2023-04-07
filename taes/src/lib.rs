@@ -1,7 +1,5 @@
 #![cfg_attr(not(test), no_std)]
 
-use core::arch::asm;
-
 macro_rules! cc_bs {
     ($b0:expr , $b1:expr, $b2:expr, $b3:expr $(,)?) => {{
         let b0 = u32::from($b0);
@@ -17,9 +15,7 @@ macro_rules! cc_bs {
 mod reference;
 
 macro_rules! idx {
-    ($bs:expr , $r:expr, $c:expr $(,)?) => {
-        (($bs[$c] >> ((3 - $r) * 8)) & 0xFF) as usize
-    };
+    ($bs:expr , $r:expr, $c:expr $(,)?) => {{}};
 }
 
 static SBOX: [u8; 256] = [
@@ -41,7 +37,7 @@ static SBOX: [u8; 256] = [
     0x8C, 0xA1, 0x89, 0x0D, 0xBF, 0xE6, 0x42, 0x68, 0x41, 0x99, 0x2D, 0x0F, 0xB0, 0x54, 0xBB, 0x16,
 ];
 
-pub type TTable = [[u32; 256]; 4];
+pub type TTable = [u32; 1024];
 
 fn xtime(b: u8) -> u8 {
     if b & 0x80 == 0 {
@@ -76,11 +72,21 @@ pub fn fill_ttable(ttable: &mut TTable) {
         let sb_2 = sb_2 as u32;
         let sb_3 = sb_3 as u32;
 
-        ttable[0][b as usize] = cc_bs!(sb_2, sb, sb, sb_3);
-        ttable[1][b as usize] = cc_bs!(sb_3, sb_2, sb, sb);
-        ttable[2][b as usize] = cc_bs!(sb, sb_3, sb_2, sb);
-        ttable[3][b as usize] = cc_bs!(sb, sb, sb_3, sb_2);
+        ttable[0 * 256 + (b as usize)] = cc_bs!(sb_2, sb, sb, sb_3);
+        ttable[1 * 256 + (b as usize)] = cc_bs!(sb_3, sb_2, sb, sb);
+        ttable[2 * 256 + (b as usize)] = cc_bs!(sb, sb_3, sb_2, sb);
+        ttable[3 * 256 + (b as usize)] = cc_bs!(sb, sb, sb_3, sb_2);
     }
+}
+
+#[inline]
+fn cell(cols: &[u32; 4], te: &TTable, i: usize, j: usize) -> u32 {
+    te[j * 256 + (((cols[((i + j) % 4)]) >> (24 - (j * 8))) & 0xFF) as usize]
+}
+
+#[inline]
+fn col(cols: &[u32; 4], te: &TTable, i: usize) -> u32 {
+    cell(cols, te, i, 0) ^ cell(cols, te, i, 1) ^ cell(cols, te, i, 2) ^ cell(cols, te, i, 3)
 }
 
 pub fn tt_forward(cols: &mut [u32; 4], te: &TTable) {
@@ -93,23 +99,11 @@ pub fn tt_forward(cols: &mut [u32; 4], te: &TTable) {
     // r1 = T0[a0,1] ^ T1[a1,0] ^ T2[a2,3] ^ T3[a3,2]
     // r2 = T0[a0,2] ^ T1[a1,1] ^ T2[a2,0] ^ T3[a3,3]
     // r3 = T0[a0,3] ^ T1[a1,2] ^ T2[a2,1] ^ T3[a3,0]
-    
-    let r0 = te[0][idx!(cols, 0, 0)]
-        ^ te[1][idx!(cols, 1, 1)]
-        ^ te[2][idx!(cols, 2, 2)]
-        ^ te[3][idx!(cols, 3, 3)];
-    let r1 = te[0][idx!(cols, 0, 1)]
-        ^ te[1][idx!(cols, 1, 2)]
-        ^ te[2][idx!(cols, 2, 3)]
-        ^ te[3][idx!(cols, 3, 0)];
-    let r2 = te[0][idx!(cols, 0, 2)]
-        ^ te[1][idx!(cols, 1, 3)]
-        ^ te[2][idx!(cols, 2, 0)]
-        ^ te[3][idx!(cols, 3, 1)];
-    let r3 = te[0][idx!(cols, 0, 3)]
-        ^ te[1][idx!(cols, 1, 0)]
-        ^ te[2][idx!(cols, 2, 1)]
-        ^ te[3][idx!(cols, 3, 2)];
+
+    let r0 = col(cols, te, 0);
+    let r1 = col(cols, te, 1);
+    let r2 = col(cols, te, 2);
+    let r3 = col(cols, te, 3);
 
     cols[0] = r0;
     cols[1] = r1;
@@ -134,7 +128,7 @@ mod tests {
         ($input:expr) => {
             let bs = $input.to_be_bytes();
 
-            let mut ttable = [[0; 256]; 4];
+            let mut ttable = [0; 1024];
 
             fill_ttable(&mut ttable);
 
