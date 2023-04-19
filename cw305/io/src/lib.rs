@@ -1,7 +1,5 @@
 #![no_std]
 
-use core::arch::asm;
-
 use io_trait::InputOutput;
 
 pub struct IO;
@@ -13,6 +11,12 @@ impl InputOutput for IO {
     }
 
     #[inline]
+    fn end() {
+        loop {}
+    }
+    
+
+    #[inline]
     fn read_byte() -> u8 {
         ext_io::read()
     }
@@ -22,10 +26,12 @@ impl InputOutput for IO {
         ext_io::write(b)
     }
 
+    #[inline]
     fn write_word(w: u32) {
         ext_io::write_word(w)
     }
 
+    #[inline]
     fn read_word() -> u32 {
         ext_io::read_word()
     }
