@@ -15,4 +15,42 @@ To setup everything first run:
 cp /path/to/set_associative_cache.bit cw305/
 ```
 
+## Running attacks
+
+To run an attack use the `./run.sh` script in the `cw305` or `gem5` directory.
+Supply an argument is the name of the attack in the `attacks` directory. The
+attacks `io_accuracy`, `test_cache` and `find_sets` are provided. For example,
+to run the `find_sets`.
+
+```bash
+# For the CW305 (ensure it is connected)
+cd cw305
+./run.sh find_sets
+
+# For gem5
+cd gem5
+./run.sh gem5
+```
+
+## Adding a new attack
+
+To add a new attack, it is important to follow a couple of steps:
+
+1. Copy over the `att/io_accuracy` into a `att/new_attack`.
+2. Rename the project `name` in the `att/new_attack/Cargo.toml` to `new_attack`.
+3. Copy over `python-srcs/io_accuracy.py` to `python-srcs/new_attack.py`.
+4. Add an `import` and `match case` in the `python-srcs/attacks.py` with your
+      attack.
+
+At this point you can start adjusting the `att/new_attack/src/main.rs` to
+contain the code for you attack. You can use the `IO::read_word()` and
+`IO::write_word(w)` functions to write to the python interface independent of
+whether we are using gem5 or the cw305. We can similarly use the
+`io.receive_word()` and `io.send_word()` operations in the
+`python-srcs/new_attack.py` to receive and send data to the target. Note that
+all these operations are blocking.
+
+> **NOTE**: It is important to use a `snake_case` name for your attack as
+> Rust does not deal very well with the name otherwise.
+
 [pulpino-top]: https://github.com/coastalwhite/pulpino-top-level-cw305
