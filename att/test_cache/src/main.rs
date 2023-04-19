@@ -57,6 +57,10 @@ fn main() {
     flush();
     write_success(consequentive_array_write_reads());
 
+    write_success(does_cache());
+    write_success(does_flush());
+
+
     IO::end();
 }
 
@@ -166,4 +170,25 @@ fn consequentive_array_write_reads() -> bool {
     }
 
     is_success
+}
+
+fn does_cache() -> bool {
+    flush();
+
+    let tta_1 = IO::time_addr_read(0x0010_7000 as *const u32);
+    let tta_2 = IO::time_addr_read(0x0010_7000 as *const u32);
+
+    tta_2 < tta_1
+}
+
+fn does_flush() -> bool {
+    flush();
+
+    IO::time_addr_read(0x0010_7000 as *const u32);
+    let tta_1 = IO::time_addr_read(0x0010_7000 as *const u32);
+    IO::time_addr_read(0x0010_6000 as *const u32);
+    IO::time_addr_read(0x0010_5000 as *const u32);
+    let tta_2 = IO::time_addr_read(0x0010_7000 as *const u32);
+
+    tta_2 > tta_1
 }

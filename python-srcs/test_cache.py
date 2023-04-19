@@ -18,6 +18,8 @@ TESTS = [
     "write_read_cache_line flush",
     "write_evict_read",
     "consequentive_array_write_reads",
+    "does_cache",
+    "does_flush",
 ]
 MAX_LENGTH = max(map(lambda t: len(t), TESTS))
 
