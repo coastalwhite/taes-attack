@@ -12,7 +12,7 @@ use gem5_io::IO;
 #[cfg(feature = "cw305")]
 use cw305_io::IO;
 
-use core::arch::{global_asm, asm};
+use core::arch::global_asm;
 use core::panic::PanicInfo;
 
 #[panic_handler]
@@ -25,7 +25,7 @@ global_asm!(
 .text
 .globl _start
 _start:
-    lui     sp,0x108
+    lui     sp,0x107
     j       main
 "#
 );
@@ -34,7 +34,8 @@ _start:
 fn main() {
     IO::start();
 
-    let ttable_ptr = 0x0010_0000 as *mut taes::TTable;
+    // let ttable = [[0; 256]; 4];
+    let ttable_ptr = 0x0010_7000 as *mut taes::TTable;
     let ttable = unsafe { ttable_ptr.as_mut().unwrap_unchecked() };
     taes::fill_ttable(ttable);
 
@@ -47,40 +48,39 @@ fn main() {
         // PRIME
         for i in 0..128 {
             unsafe {
-                ((0x0010_4000 | (i << 4)) as *const u32).read_volatile();
+                ((0x0010_0000 | (i << 4)) as *const u32).read_volatile();
             }
         }
 
         // VICTIM
-        taes::tt_forward(&mut [p0, p1, p2, p3], unsafe {
-            (0x0010_0000 as *const taes::TTable).as_ref().unwrap_unchecked()
-        });
-
-        // unsafe { 
-        //     ((0x0010_1000 | (((p0 >> 24) & 0xFF) << 2)) as *const u32).read_volatile();
-        //     ((0x0010_1000 | (((p0 >> 16) & 0xFF) << 2)) as *const u32).read_volatile();
-        //     ((0x0010_1000 | (((p0 >>  8) & 0xFF) << 2)) as *const u32).read_volatile();
-        //     ((0x0010_1000 | (((p0 >>  0) & 0xFF) << 2)) as *const u32).read_volatile();
-        //     ((0x0010_1000 | (((p1 >> 24) & 0xFF) << 2)) as *const u32).read_volatile();
-        //     ((0x0010_1000 | (((p1 >> 16) & 0xFF) << 2)) as *const u32).read_volatile();
-        //     ((0x0010_1000 | (((p1 >>  8) & 0xFF) << 2)) as *const u32).read_volatile();
-        //     ((0x0010_1000 | (((p1 >>  0) & 0xFF) << 2)) as *const u32).read_volatile();
-        //     ((0x0010_1000 | (((p2 >> 24) & 0xFF) << 2)) as *const u32).read_volatile();
-        //     ((0x0010_1000 | (((p2 >> 16) & 0xFF) << 2)) as *const u32).read_volatile();
-        //     ((0x0010_1000 | (((p2 >>  8) & 0xFF) << 2)) as *const u32).read_volatile();
-        //     ((0x0010_1000 | (((p2 >>  0) & 0xFF) << 2)) as *const u32).read_volatile();
-        //     ((0x0010_1000 | (((p3 >> 24) & 0xFF) << 2)) as *const u32).read_volatile();
-        //     ((0x0010_1000 | (((p3 >> 16) & 0xFF) << 2)) as *const u32).read_volatile();
-        //     ((0x0010_1000 | (((p3 >>  8) & 0xFF) << 2)) as *const u32).read_volatile();
-        //     ((0x0010_1000 | (((p3 >>  0) & 0xFF) << 2)) as *const u32).read_volatile();
+        taes::tt_forward(&mut [p0, p1, p2, p3], &ttable);
+        
+        // Reference accesses
+        // unsafe {
+        //     ((0x0010_7000 | (((p0 >> 24) & 0xFF) << 2)) as *const u32).read_volatile();
+        //     ((0x0010_7000 | (((p0 >> 16) & 0xFF) << 2)) as *const u32).read_volatile();
+        //     ((0x0010_7000 | (((p0 >>  8) & 0xFF) << 2)) as *const u32).read_volatile();
+        //     ((0x0010_7000 | (((p0 >>  0) & 0xFF) << 2)) as *const u32).read_volatile();
+        //     ((0x0010_7000 | (((p1 >> 24) & 0xFF) << 2)) as *const u32).read_volatile();
+        //     ((0x0010_7000 | (((p1 >> 16) & 0xFF) << 2)) as *const u32).read_volatile();
+        //     ((0x0010_7000 | (((p1 >>  8) & 0xFF) << 2)) as *const u32).read_volatile();
+        //     ((0x0010_7000 | (((p1 >>  0) & 0xFF) << 2)) as *const u32).read_volatile();
+        //     ((0x0010_7000 | (((p2 >> 24) & 0xFF) << 2)) as *const u32).read_volatile();
+        //     ((0x0010_7000 | (((p2 >> 16) & 0xFF) << 2)) as *const u32).read_volatile();
+        //     ((0x0010_7000 | (((p2 >>  8) & 0xFF) << 2)) as *const u32).read_volatile();
+        //     ((0x0010_7000 | (((p2 >>  0) & 0xFF) << 2)) as *const u32).read_volatile();
+        //     ((0x0010_7000 | (((p3 >> 24) & 0xFF) << 2)) as *const u32).read_volatile();
+        //     ((0x0010_7000 | (((p3 >> 16) & 0xFF) << 2)) as *const u32).read_volatile();
+        //     ((0x0010_7000 | (((p3 >>  8) & 0xFF) << 2)) as *const u32).read_volatile();
+        //     ((0x0010_7000 | (((p3 >>  0) & 0xFF) << 2)) as *const u32).read_volatile();
         // }
 
-        // PROBE
+        //PROBE
         for i in 0..64 {
-            let time = IO::time_addr_read((0x0010_4000 | (i << 4)) as *const u32);
+            let time = IO::time_addr_read((0x0010_0000 | (i << 4)) as *const u32);
             IO::write_word(time);
         }
     }
 
-    // IO::end();
+    IO::end();
 }
