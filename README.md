@@ -2,7 +2,7 @@
 
 This repository contains the files necessary to perform the T-Table Prime+Probe
 attack on both gem5 and a CW305. For the CW305, it uses the [Pulpino-Top Level
-CW305][pulpino-top]. Most code is implemented in Rust.
+CW305][pulpino-top]. Most of the code is implemented using Rust.
 
 ## Setup
 
