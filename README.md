@@ -29,7 +29,7 @@ cd cw305
 
 # For gem5
 cd gem5
-./run.sh gem5
+./run.sh find_sets
 ```
 
 ## Adding a new attack
