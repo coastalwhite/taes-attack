@@ -34,23 +34,17 @@ _start:
 fn main() {
     IO::start();
 
-    // let ttable = [[0; 256]; 4];
     let ttable_ptr = 0x0010_7000 as *mut taes::TTable;
     let ttable = unsafe { ttable_ptr.as_mut().unwrap_unchecked() };
     taes::fill_ttable(ttable);
 
     loop {
+        prime();
+
         let p0 = IO::read_word();
         let p1 = IO::read_word();
         let p2 = IO::read_word();
         let p3 = IO::read_word();
-
-        // PRIME
-        for i in 0..128 {
-            unsafe {
-                ((0x0010_0000 | (i << 4)) as *const u32).read_volatile();
-            }
-        }
 
         // VICTIM
         taes::tt_forward(&mut [p0, p1, p2, p3], &ttable);
@@ -75,12 +69,25 @@ fn main() {
         //     ((0x0010_7000 | (((p3 >>  0) & 0xFF) << 2)) as *const u32).read_volatile();
         // }
 
-        //PROBE
-        for i in 0..64 {
-            let time = IO::time_addr_read((0x0010_0000 | (i << 4)) as *const u32);
-            IO::write_word(time);
-        }
+        probe();
     }
 
-    IO::end();
+    // IO::end();
+}
+
+#[inline(never)]
+fn prime() {
+    for i in 0..128 {
+        unsafe {
+            ((0x0010_0000 | (i << 4)) as *const u32).read_volatile();
+        }
+    }
+}
+
+#[inline(never)]
+fn probe() {
+    for i in 0..64 {
+        let time = IO::time_addr_read((0x0010_0000 | (i << 4)) as *const u32);
+        IO::write_word(time);
+    }
 }
