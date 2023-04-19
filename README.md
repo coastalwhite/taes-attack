@@ -57,4 +57,37 @@ all these operations are blocking.
 > **NOTE**: It is important to use a `snake_case` name for your attack as
 > Rust does not deal very well with the name otherwise.
 
+## Content Explanation
+
+This repository contains a couple of folders. The following figure explains
+what each directory is for.
+
+```
+att:
+    The source code of the binaries for gem5 or cw305 to run
+
+cw305:
+    The code specific to the CW305. This include the IO and setup code.
+    
+gem5:
+    The code specific to gem5. This include the IO and setup code.
+
+io_trait:
+    Defines an rust trait that is used by the `att` source code to generalize
+    over the IO for the CW305 and gem5.
+
+model:
+    Defines a modelled T-Table AES Prime+Probe attack. This is a very fact
+    model that can provide statistics on noise and queries needed.
+
+pulpino-top-level-cw305:
+    A git submodule that takes care of the CW305.
+
+python-srcs:
+    All the code needed to coordinate the attacks and generalize between the CW305 and gem5.
+
+taes:
+    The implementation of T-Table AES. This only contains the forward function which is what the attack is focussed on.
+```
+
 [pulpino-top]: https://github.com/coastalwhite/pulpino-top-level-cw305
