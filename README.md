@@ -9,6 +9,9 @@ CW305][pulpino-top]. Most of the code is implemented using Rust.
 To setup everything first run:
 
 ```bash
+# This should link to the root directory of gem5
+# Ensure that you have build the `RISCV` variant of gem5
+GEM5_DIR=path/to/gem5
 ./setup.sh
 
 # TODO: add the path to your synthesized Pulpino here

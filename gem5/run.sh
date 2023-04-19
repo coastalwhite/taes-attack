@@ -1,6 +1,8 @@
 #!/bin/sh
 
-GEM5_DIR="/home/johndoe/Documents/thesis-experiments/gem5"
+# Load GEM5_DIR
+source ../settings.sh
+
 ATT_PATH="../att"
 
 if [ -z $1 ] ; then

@@ -13,6 +13,14 @@ function link() {
 	fi
 }
 
+if [ ! -z "$GEM5_DIR" ]; then
+    echo "[SETTINGS]: Settings GEM5_DIR to '$GEM5_DIR'"
+    echo "GEM5_DIR=$GEM5_DIR" > ./settings.sh
+else
+    echo "[ERROR]: GEM5_DIR is not set"
+    exit 1
+fi
+
 link ../pulpino-top-level-cw305/program/ext/connection.py python-srcs/connection.py
 link ../python-srcs cw305/taes
 link ../python-srcs gem5/taes
