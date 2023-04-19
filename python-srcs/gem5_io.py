@@ -1,5 +1,5 @@
 from time import sleep
-from io_trait import TargetIO
+from taes.io_trait import TargetIO
 
 START_LINE = "*** START"
 END_LINE = "*** END"

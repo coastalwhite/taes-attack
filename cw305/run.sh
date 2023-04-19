@@ -18,4 +18,4 @@ popd > /dev/null
 
 riscv-none-elf-objdump -D "$ATT_BIN" > dump.out
 ./to_ram.py dump.out program.py
-./interaction.py
+./interaction.py "$ATT_DIR"

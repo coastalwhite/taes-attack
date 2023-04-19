@@ -1,4 +1,4 @@
-from io_trait import TargetIO
+from taes.io_trait import TargetIO
 
 def checked_add(io: TargetIO, a, b):
     io.send_word(a)
@@ -18,3 +18,5 @@ def run(io: TargetIO):
     checked_add(io, 0x0000_0000, 0x8899_AABB)
     checked_add(io, 0x0000_0000, 0xCCEE_FF00)
     checked_add(io, 0xFEDC_BA98, 0x0000_0000)
+
+    print("All IO tests succeeded!")

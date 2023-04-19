@@ -1,10 +1,17 @@
 #! /usr/bin/env python
 
+import sys
+
+import taes.attacks
 from taes.gem5_io import Gem5IO
-# from taes import io_accuracy
-from taes import find_sets
 
-gem5_io = Gem5IO(in_file = './input.txt', out_file = './output.txt')
+if len(sys.argv) < 2:
+    print("[ERROR]: No attack name given")
+    exit(2)
 
-# io_accuracy.run(gem5_io)
-find_sets.run(gem5_io)
+attack_name = sys.argv[1]
+
+
+gem5_io = Gem5IO(in_file="./input.txt", out_file="./output.txt")
+
+taes.attacks.run(gem5_io, attack_name)
