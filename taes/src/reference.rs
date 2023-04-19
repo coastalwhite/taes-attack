@@ -14,11 +14,11 @@ const RCON: [u32; 10] = [
     0x3600_0000,
 ];
 
-pub fn rotword(w: u32) -> u32 {
+pub(crate) fn rotword(w: u32) -> u32 {
     w.rotate_left(8)
 }
 
-pub fn subword(w: u32) -> u32 {
+pub(crate) fn subword(w: u32) -> u32 {
     cc_bs![
         SBOX[((w & 0xFF00_0000) >> 24) as usize],
         SBOX[((w & 0x00FF_0000) >> 16) as usize],
@@ -27,14 +27,14 @@ pub fn subword(w: u32) -> u32 {
     ]
 }
 
-pub fn sub_bytes(bs: &mut [u32; 4]) {
+pub(crate) fn sub_bytes(bs: &mut [u32; 4]) {
     bs[0] = subword(bs[0]);
     bs[1] = subword(bs[1]);
     bs[2] = subword(bs[2]);
     bs[3] = subword(bs[3]);
 }
 
-pub fn key_schedule(ks: &mut [[u32; 4]; 11]) {
+pub(crate) fn key_schedule(ks: &mut [[u32; 4]; 11]) {
     for i in 1..11 {
         ks[i][0] = ks[i - 1][0] ^ subword(rotword(ks[i - 1][3])) ^ RCON[i - 1];
         ks[i][1] = ks[i - 1][1] ^ ks[i][0];
@@ -43,7 +43,7 @@ pub fn key_schedule(ks: &mut [[u32; 4]; 11]) {
     }
 }
 
-pub fn shift_rows(cols: &mut [u32; 4]) {
+pub(crate) fn shift_rows(cols: &mut [u32; 4]) {
     // a0 b0 c0 d0        a0 b0 c0 d0
     // a1 b1 c1 d1   >>   b1 c1 d1 a1
     // a2 b2 c2 d2   >>   c2 d2 a2 b2
@@ -79,7 +79,7 @@ pub fn shift_rows(cols: &mut [u32; 4]) {
     cols[3] = d;
 }
 
-pub fn mix_column(col: u32) -> u32 {
+pub(crate) fn mix_column(col: u32) -> u32 {
     let bs = col.to_be_bytes();
 
     cc_bs![
@@ -90,7 +90,7 @@ pub fn mix_column(col: u32) -> u32 {
     ]
 }
 
-pub fn mix_columns(cols: &mut [u32; 4]) {
+pub(crate) fn mix_columns(cols: &mut [u32; 4]) {
     cols[0] = mix_column(cols[0]);
     cols[1] = mix_column(cols[1]);
     cols[2] = mix_column(cols[2]);
@@ -98,21 +98,21 @@ pub fn mix_columns(cols: &mut [u32; 4]) {
 }
 
 #[inline]
-pub fn add_roundkey(cols: &mut [u32; 4], k: &[u32; 4]) {
+pub(crate) fn add_roundkey(cols: &mut [u32; 4], k: &[u32; 4]) {
     cols[0] ^= k[0];
     cols[1] ^= k[1];
     cols[2] ^= k[2];
     cols[3] ^= k[3];
 }
 
-pub fn round(cols: &mut [u32; 4], k: &[u32; 4]) {
+pub(crate) fn round(cols: &mut [u32; 4], k: &[u32; 4]) {
     sub_bytes(cols);
     shift_rows(cols);
     mix_columns(cols);
     add_roundkey(cols, k);
 }
 
-pub fn encrypt(bs: &[u8; 16], k: &[u8; 16]) -> [u8; 16] {
+pub(crate) fn encrypt(bs: &[u8; 16], k: &[u8; 16]) -> [u8; 16] {
     let mut ks = [[0u32; 4]; 11];
 
     ks[0][0] = cc_bs!(k[0], k[1], k[2], k[3]);
