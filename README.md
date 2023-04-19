@@ -1,9 +1,9 @@
 # T-Table AES Prime+Probe Attack
 
 This repository contains the files necessary to perform the T-Table Prime+Probe
-attack on both gem5 and a CW305. This is made so it can be extended for other
-programs. For the CW305, it uses the [Pulpino-Top Level CW305][pulpino-top].
-Most of the code is implemented using Rust.
+attack on both gem5 and a CW305 with a Pulpino Risc-V Core. This is made so it can
+be extended for other programs. For the CW305, it uses the [Pulpino-Top
+Level CW305][pulpino-top]. Most of the code is implemented using Rust.
 
 ## Setup
 
