@@ -11,12 +11,6 @@ impl InputOutput for IO {
     }
 
     #[inline]
-    fn end() {
-        loop {}
-    }
-    
-
-    #[inline]
     fn read_byte() -> u8 {
         ext_io::read()
     }

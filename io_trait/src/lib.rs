@@ -13,6 +13,8 @@ pub trait InputOutput {
 
     fn time_addr_read(addr: *const u32) -> u32;
 
-    fn end() {}
+    fn end() -> ! {
+        loop {}
+    }
 }
 

@@ -27,6 +27,18 @@ impl InputOutput for IO {
     }
 
     #[inline]
+    fn end() -> ! {
+        unsafe {
+            asm!(
+                "li a7,93", // Syscall = Exit
+                "li a0,0",  // STDOUT
+                "ecall",
+                options(noreturn)
+            );
+        }
+    }
+
+    #[inline]
     fn read_byte() -> u8 {
         loop {
             let mut size: u32;
