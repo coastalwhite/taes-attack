@@ -12,7 +12,7 @@ def run(io: TargetIO):
 
     with open('accuracy_assessment.out', 'w') as f:
         for _ in range(1000):
-            io.send_word(random.randint(0,0xFF))
+            io.send_word(random.randint(0,0xFFF))
             tta = io.receive_word()
 
             if abs(tta - miss_time) < abs(tta - hit_time):    

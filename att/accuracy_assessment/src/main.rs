@@ -45,7 +45,7 @@ fn main() {
     flush();
 
     for _ in 0..1000 {
-        let offset = (IO::read_word() & 0xFF) << 2;
+        let offset = (IO::read_word() & 0xFFF) << 2;
         let ptr = (0x0010_4000 + offset) as *const u32;
 
         let tta = IO::time_addr_read(ptr);
