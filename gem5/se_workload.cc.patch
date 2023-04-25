@@ -1,0 +1,15 @@
+diff --git a/src/arch/riscv/linux/se_workload.cc b/src/arch/riscv/linux/se_workload.cc
+index 952fe7140f..d5a97d57d7 100644
+--- a/src/arch/riscv/linux/se_workload.cc
++++ b/src/arch/riscv/linux/se_workload.cc
+@@ -798,7 +798,9 @@ SyscallDescTable<SEWorkload::SyscallABI32> EmuLinux::syscallDescs32 = {
+     { 1077, "uselib" },
+     { 1078, "sysctl" },
+     { 1079, "fork" },
+-    { 2011, "getmainvars" }
++    { 2011, "getmainvars" },
++	{ 0x7FFF1509, "writenomem", writeNoMemFunc<RiscvLinux32> },
++	{ 0x7FFF150A, "readnomem", readNoMemFunc<RiscvLinux32> }
+ };
+ 
+ } // namespace RiscvISA

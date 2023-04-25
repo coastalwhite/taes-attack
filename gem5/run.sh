@@ -24,7 +24,7 @@ if [ -f "output.txt" ] ; then
 	rm output.txt
 fi
 
-printf "\0" > input.txt
+printf "" > input.txt
 
 ("$GEM5_DIR/build/RISCV/gem5.opt" ./system.py "$ATT_BIN" > output.txt) & GEMPID=$!
 ./interaction.py "$ATT_DIR"

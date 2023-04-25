@@ -10,9 +10,18 @@ Level CW305][pulpino-top]. Most of the code is implemented using Rust.
 To setup everything first run:
 
 ```bash
-# This should link to the root directory of gem5
-# Ensure that you have build the `RISCV` variant of gem5
+# TODO: This should link to the root directory of gem5
 GEM5_DIR=path/to/gem5
+patch "$GEM5_DIR/src/sim/syscall_emul.hh" ./gem5/syscall_emul.hh.patch
+patch "$GEM5_DIR/src/arch/riscv/linux/se_workload.cc" ./gem5/se_workload.cc.patch
+
+# Ensure that you have build the `RISCV` variant of gem5
+pushd $GEM5_DIR
+# You can select a `j` value according to your number of cores.
+# Usually, `j = #Cores + 1`.
+scons build/RISCV/gem5.opt -j 10
+popd
+
 ./setup.sh
 
 # TODO: add the path to your synthesized Pulpino here

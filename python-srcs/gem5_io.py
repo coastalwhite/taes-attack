@@ -48,7 +48,7 @@ class Gem5IO(TargetIO):
     def send_word(self, w):
         bs = "{:08X}".format(w).encode()
         bs = bytearray(bs)
-        bs.append(0)
+        # bs.append(0)
 
         in_file = open(self.in_file_path, "ab")
         in_file.write(bs)

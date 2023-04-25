@@ -1,0 +1,42 @@
+diff --git a/src/sim/syscall_emul.hh b/src/sim/syscall_emul.hh
+index b4550dd86b..715a1e9c19 100644
+--- a/src/sim/syscall_emul.hh
++++ b/src/sim/syscall_emul.hh
+@@ -3084,6 +3084,37 @@ getrandomFunc(SyscallDesc *desc, ThreadContext *tc,
+     return count;
+ }
+ 
++template <typename OS>
++SyscallReturn
++writeNoMemFunc(SyscallDesc *desc, ThreadContext *tc, char value)
++{
++    int bytes_written = write(1, &value, 1);
++    if (bytes_written != 1)
++        return 1;
++    else
++        return 0;
++}
++
++template <typename OS>
++SyscallReturn
++readNoMemFunc(SyscallDesc *desc, ThreadContext *tc)
++{
++    auto p = tc->getProcessPtr();
++
++    auto hbfdp = std::dynamic_pointer_cast<HBFDEntry>((*p->fds)[0]);
++    if (!hbfdp)
++        return -EBADF;
++    int sim_fd = hbfdp->getSimFD();
++
++	char value;
++    int bytes_read = read(sim_fd, &value, 1);
++
++    if (bytes_read != 1)
++        return static_cast<SyscallReturn>(0);
++    else
++        return static_cast<SyscallReturn>(0xFF00 | ((int) value));
++}
++
+ } // namespace gem5
+ 
+ #endif // __SIM_SYSCALL_EMUL_HH__
