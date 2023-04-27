@@ -188,7 +188,7 @@ def run(io: TargetIO):
         if KEY[i] < start or KEY[i] > end:
             print("WRONG. off by {}".format(min(abs(KEY[i] - start), abs(KEY[i] - end))))
         else:
-            print("{:02}: {:02X}-{:02X} (correct = {} '{}')".format(
+            print("{:02}: {:02X}-{:02X} (correct = {:03} '{}')".format(
                 i, start, end, KEY[i], chr(KEY[i])
             ))
 
