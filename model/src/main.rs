@@ -1,6 +1,6 @@
 const TRIES: usize = 1000000;
 
-use taes_attack::{find_sets, NoiseType, are_correct_sets};
+use model::{find_sets, NoiseType, are_correct_sets};
 
 fn main() {
     let k = [b'b', b'u', b'p', b'e', b'r', b's', b'e', b'c', b'r', b'e', b't', b'k', b'e', b'y', b'!', b'!'];
