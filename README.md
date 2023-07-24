@@ -16,6 +16,7 @@ patch "$GEM5_DIR/src/sim/syscall_emul.hh" ./gem5/syscall_emul.hh.patch
 patch "$GEM5_DIR/src/arch/riscv/linux/se_workload.cc" ./gem5/se_workload.cc.patch
 
 # Ensure that you have build the `RISCV` variant of gem5
+# This is tested with the `e7ae5290f56cb8b729b36ff882ea9861e7cb91e7` commit
 pushd $GEM5_DIR
 # You can select a `j` value according to your number of cores.
 # Usually, `j = #Cores + 1`.
